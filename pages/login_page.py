@@ -1,5 +1,6 @@
+import re
 from playwright.sync_api import Page, expect
-from selectors.selectors import LoginSelectors
+from selector.selectors import LoginSelectors
 
 
 class LoginPage:
@@ -13,6 +14,6 @@ class LoginPage:
 
     def assert_logged_in(self) -> None:
         expect(self.page).not_to_have_url(
-            lambda url: "login" in url,
+            re.compile(r".*login.*"),
             timeout=10000
         )

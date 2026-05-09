@@ -1,6 +1,7 @@
 import os
+from pathlib import Path
 from playwright.sync_api import Page, expect
-from selectors.selectors import PartnerFormSelectors
+from selector.selectors import PartnerFormSelectors
 
 
 class PartnerFormPage:
@@ -16,12 +17,15 @@ class PartnerFormPage:
 
     def select_first_service(self) -> None:
         self.page.locator(PartnerFormSelectors.SERVICES_DROPDOWN).click()
-        self.page.locator(PartnerFormSelectors.FIRST_DROPDOWN_OPT).first.click()
-        # Close the dropdown by clicking the name field
+        self.page.locator(PartnerFormSelectors.SERVICES_FIRST_OPT).first.click()
         self.page.locator(PartnerFormSelectors.NAME_INPUT).click()
 
     def select_first_subscription(self) -> None:
         self.page.locator(PartnerFormSelectors.SUBSCRIPTION_DROP).click()
+        self.page.wait_for_selector(
+            PartnerFormSelectors.FIRST_DROPDOWN_OPT,
+            state="visible"
+        )
         self.page.locator(PartnerFormSelectors.FIRST_DROPDOWN_OPT).first.click()
 
     def fill_address(self, address: str) -> None:
@@ -37,11 +41,9 @@ class PartnerFormPage:
         self.page.locator(PartnerFormSelectors.DESCRIPTION_INPUT).fill(text)
 
     def upload_logo(self) -> None:
-        logo_path = os.path.join(
-            os.path.dirname(__file__), "..", "fixtures", "test_logo.png"
-        )
+        logo_path = Path(__file__).parent.parent / "fixtures" / "test_logo.png"
         self.page.locator(PartnerFormSelectors.UPLOAD_INPUT).set_input_files(
-            os.path.abspath(logo_path),
+            str(logo_path),
             force=True
         )
 

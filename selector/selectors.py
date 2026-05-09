@@ -32,8 +32,8 @@ class PartnerFormSelectors:
 
     # Dropdown options
     TYPE_SERVICE_OPTION = "div[label='Service']"
-    # First available option in any open dropdown
-    FIRST_DROPDOWN_OPT  = ".ant-select-item-option:first-child"
+    SERVICES_FIRST_OPT  = "span.fh8br"   # unique class to service type items only
+    FIRST_DROPDOWN_OPT  = ".ant-select-dropdown:not(.ant-select-dropdown-hidden) .ant-select-item-option"
 
     # File upload - hidden input inside the upload div
     UPLOAD_INPUT        = "#image-upload-button input[type='file']"

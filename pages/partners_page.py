@@ -1,5 +1,5 @@
 from playwright.sync_api import Page, expect
-from selectors.selectors import (
+from selector.selectors import (
     NavSelectors,
     PartnersPageSelectors,
     EditMenuSelectors
@@ -11,7 +11,8 @@ class PartnersPage:
         self.page = page
 
     def navigate(self) -> None:
-        self.page.goto(NavSelectors.PARTNERS_PATH)
+        from utils.test_data import BASE_URL
+        self.page.goto(f"{BASE_URL}{NavSelectors.PARTNERS_PATH}")
         expect(
             self.page.locator(PartnersPageSelectors.TABLE_ROW).first
         ).to_be_visible(timeout=10000)
