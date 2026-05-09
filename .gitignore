@@ -216,3 +216,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Playwright
+auth.json
+playwright-report/
+test-results/
+
+# Allure
+allure-results/
+allure-report/
+
+# pytest
+reports/
+
+# Environment
+.env
