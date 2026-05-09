@@ -5,7 +5,6 @@ class LoginSelectors:
 
 
 class NavSelectors:
-    # Navigating directly via URL - the span is display:none
     PARTNERS_PATH   = "/partners"
 
 
@@ -18,33 +17,32 @@ class PartnersPageSelectors:
 
 
 class PartnerFormSelectors:
-    # Text inputs - all have real IDs, CSS is clean
+    # Text inputs
     NAME_INPUT          = "#name-field"
     ADDRESS_INPUT       = "#address-field"
+    ADDRESS_AUTOCOMPLETE = ".pac-item"
     PHONE_INPUT         = "#phone-field"
     CONTACT_INPUT       = "#contact-person-field"
     DESCRIPTION_INPUT   = "#description-field"
 
-    # Ant Design Select dropdowns - click the input to open
-    TYPE_DROPDOWN       = "#partner-type-field"
-    SERVICES_DROPDOWN   = "#service-types-field"
-    SUBSCRIPTION_DROP   = "#subscription-tier-field"
+    # Each dropdown scoped to its own container via :has()
+    # This prevents cross-dropdown option matching entirely
+    TYPE_CONTAINER          = "div.ant-select:has(#partner-type-field)"
+    SERVICES_CONTAINER      = "div.ant-select:has(#service-types-field)"
+    SUBSCRIPTION_CONTAINER  = "div.ant-select:has(#subscription-tier-field)"
 
-    # Dropdown options
+    # Options — always used scoped inside their container
     TYPE_SERVICE_OPTION = "div[label='Service']"
-    SERVICES_FIRST_OPT  = "span.fh8br"   # unique class to service type items only
-    FIRST_DROPDOWN_OPT  = ".ant-select-dropdown:not(.ant-select-dropdown-hidden) .ant-select-item-option"
+    DROPDOWN_OPTION     = ".ant-select-item-option"
 
-    # File upload - hidden input inside the upload div
-    UPLOAD_INPUT        = "#image-upload-button input[type='file']"
+    # File upload
+    UPLOAD_INPUT = "input[name='file-upload']"
+    LOGO_CROP_SAVE = "button:has(span.J9zkR:not([id]))"
 
     # Modal actions
-    SAVE_BUTTON         = "#save-button"
+    SAVE_BUTTON = "button:has(#save-button)"
     CANCEL_BUTTON       = "#cancel-button"
-
-    # Modal container - used to wait for close
     MODAL_WRAPPER       = ".ant-modal-wrap"
-
 
 class EditMenuSelectors:
     EDIT_BUTTON         = "#edit-button"
