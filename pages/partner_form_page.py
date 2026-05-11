@@ -50,7 +50,11 @@ class PartnerFormPage:
         self.page.locator(PartnerFormSelectors.UPLOAD_INPUT).set_input_files(
             str(logo_path)
         )
-        crop_save = self.page.locator(PartnerFormSelectors.CROP_MODAL_SAVE)
+        # The crop modal opens on top of the form modal, making it the last
+        # .ant-modal-footer in the DOM. Target its primary (OK) button.
+        crop_save = self.page.locator(
+            PartnerFormSelectors.CROP_MODAL_FOOTER
+        ).last.locator("button.ant-btn-primary")
         crop_save.wait_for(state="visible", timeout=10000)
         crop_save.click()
         # Wait for crop modal to fully close before returning

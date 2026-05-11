@@ -39,7 +39,8 @@ class PartnerFormSelectors:
 
     # File upload
     UPLOAD_INPUT = "input[name='file-upload']"
-    CROP_MODAL_SAVE = ".ant-modal-footer button.ant-btn-primary"
+    # Crop modal footer -- the crop modal is the topmost (last) modal when open
+    CROP_MODAL_FOOTER = ".ant-modal-footer"
 
     # Modal actions
     SAVE_BUTTON = "button:has(#save-button)"
