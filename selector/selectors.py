@@ -13,6 +13,7 @@ class PartnersPageSelectors:
     SEARCH_INPUT        = "#search-partners"
     TABLE_ROW           = "tr.ant-table-row"
     PARTNER_NAME_CELL   = "span.Cq6YF"
+    CONTACT_PERSON_COLUMN = "td.testid-pickUpDateColumn"
     ACTION_BUTTON       = "#action-button"
 
 

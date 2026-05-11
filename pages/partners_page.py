@@ -26,13 +26,15 @@ class PartnersPage:
         )
 
     def assert_partner_visible(self, name: str) -> None:
-        expect(
-            self.page.locator(
-                f"{PartnersPageSelectors.PARTNER_NAME_CELL}:has-text('{name}')"
+        loc = self.page.locator(
+            f"{PartnersPageSelectors.PARTNER_NAME_CELL}:has-text('{name}')"
+        )
+        try:
+            expect(loc).to_be_visible(timeout=10000)
+        except AssertionError:
+            raise AssertionError(
+                f"Partner '{name}' was not found in the partners table"
             )
-        ).to_be_visible(
-            timeout=10000
-        ), f"Partner '{name}' was not found in the partners table"
 
     def open_edit_for_partner(self, name: str) -> None:
         row = self.get_row_by_name(name)

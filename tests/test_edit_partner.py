@@ -3,6 +3,7 @@ from faker import Faker
 from playwright.sync_api import expect
 from pages.partners_page import PartnersPage
 from pages.partner_form_page import PartnerFormPage
+from selector.selectors import PartnersPageSelectors
 from utils.helpers import reload_and_assert_visible
 
 fake = Faker()
@@ -51,7 +52,7 @@ def test_edit_partner(page, partner_data):
     # ── Assert: updated contact person visible in the correct row ─────────────
     row = partners_page.get_row_by_name(partner_data["name"])
     expect(
-        row.locator("td.testid-pickUpDateColumn")
+        row.locator(PartnersPageSelectors.CONTACT_PERSON_COLUMN)
     ).to_have_text(
         updated_contact,
         timeout=10000
