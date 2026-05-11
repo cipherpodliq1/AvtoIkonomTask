@@ -1,21 +1,21 @@
+import re
 from playwright.sync_api import Page, expect
 
 
 def wait_for_url_contains(page: Page, fragment: str, timeout: int = 10000) -> None:
     """Wait until the current URL contains the given fragment."""
-    expect(page).to_have_url(
-        lambda url: fragment in url,
-        timeout=timeout
-    )
+    expect(page).to_have_url(re.compile(f".*{re.escape(fragment)}.*"), timeout=timeout)
 
 
 def assert_element_visible(page: Page, selector: str, message: str = "") -> None:
     """Assert a single element is visible with a clear failure message."""
-    expect(
-        page.locator(selector)
-    ).to_be_visible(
-        timeout=10000
-    )
+    locator = page.locator(selector)
+    try:
+        expect(locator).to_be_visible(timeout=10000)
+    except AssertionError as exc:
+        if message:
+            raise AssertionError(message) from exc
+        raise
 
 
 def reload_and_assert_visible(page: Page, selector: str, message: str = "") -> None:

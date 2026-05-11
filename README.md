@@ -12,8 +12,8 @@ This project was built as a QA automation assignment covering the partner manage
 
 The suite covers two test scenarios:
 
-- **TC-01** — Create a new partner with all required fields and verify persistence
-- **TC-02** — Edit an existing partner and verify the changes are saved *(bonus)*
+- **TC-01** -- Create a new partner with all required fields and verify persistence
+- **TC-02** -- Edit an existing partner and verify the changes are saved *(bonus)*
 
 ---
 
@@ -23,7 +23,7 @@ The suite covers two test scenarios:
 
 Playwright was chosen over Cypress as it offers better support for complex UI interactions such as file uploads, custom dropdown components, and Google Maps autocomplete. Python was chosen for readability and natural language test structure.
 
-### Page Object Model — Lean by Design
+### Page Object Model -- Lean by Design
 
 The project uses a three-file POM:
 
@@ -39,15 +39,15 @@ Every selector in the suite lives exclusively in `selector/selectors.py`. No sel
 
 **Why this matters in practice:**
 
-When the UI changes (and it always does), you update one file and the entire suite is healed. No grep across the codebase, no risk of missing an occurrence. Selectors are also named semantically, which makes test code self-documenting — `PartnerFormSelectors.SAVE_BUTTON` tells you more than `"button.ant-btn-primary"` ever could.
+When the UI changes (and it always does), you update one file and the entire suite is healed. No grep across the codebase, no risk of missing an occurrence. Selectors are also named semantically, which makes test code self-documenting -- `PartnerFormSelectors.SAVE_BUTTON` tells you more than a raw CSS string ever could.
 
 **Selector priority:**
 
-1. ID attributes (`#name-field`) — most stable, tied to developer intent
-2. CSS with meaningful attributes (`input[name='file-upload']`)
-3. CSS `:has()` scoping for Ant Design dropdowns
-4. Text-based Playwright selectors (`:has-text()`) for buttons
-5. XPath — only when no CSS hook exists
+1. ID attributes (`#name-field`) -- most stable, tied to developer intent
+2. Developer test-id classes (`td.testid-requestNumberColumn`) -- stable column identifiers
+3. CSS with meaningful attributes (`input[name='file-upload']`)
+4. CSS `:has()` scoping for Ant Design dropdowns
+5. Text-based Playwright selectors (`:has-text()`) for buttons
 
 ### Ant Design Dropdown Strategy
 
@@ -69,9 +69,9 @@ Login runs exactly once per test session. The browser state (cookies, localStora
 
 **Why this matters:**
 
-- Faster test execution — no repeated login flows
-- More realistic — mirrors how a real user session works
-- Isolated failure point — if auth breaks, it breaks once, clearly
+- Faster test execution -- no repeated login flows
+- More realistic -- mirrors how a real user session works
+- Isolated failure point -- if auth breaks, it breaks once, clearly
 
 ### Unique Test Data per Run
 
@@ -81,22 +81,22 @@ Partner names are generated with a timestamp and random suffix:
 AutoTest Partner 20260509-171257-tvcluf
 ```
 
-This prevents test collisions on the shared development environment. If two engineers run the suite simultaneously, their data never interferes. It also makes cleanup trivial — filter by `AutoTest` to find and remove all test-generated data.
+This prevents test collisions on the shared development environment. If two engineers run the suite simultaneously, their data never interferes. It also makes cleanup trivial -- filter by `AutoTest` to find and remove all test-generated data.
 
 ### No `time.sleep()` Anywhere
 
 All waiting is done through Playwright's built-in mechanisms:
 
-- `wait_for_selector(state="visible")` — wait for an element to appear
-- `wait_for_selector(state="hidden")` — wait for an element to disappear
-- `expect(locator).to_be_visible()` — assertion with built-in retry
-- `locator.wait_for(state="visible")` — pre-click stability check
+- `wait_for_selector(state="visible")` -- wait for an element to appear
+- `wait_for_selector(state="hidden")` -- wait for an element to disappear
+- `expect(locator).to_be_visible()` -- assertion with built-in retry
+- `locator.wait_for(state="visible")` -- pre-click stability check
 
 Hard sleeps make tests slow and brittle. If the application is slow on a given day, a `sleep(2)` either wastes time when the app is fast or causes flakiness when it is slow.
 
 ### Google Maps Autocomplete Handling
 
-The Address field uses Google Places Autocomplete (`pac-target-input`). Typing text alone is not enough — the form validates that an address was selected from the dropdown, not just typed.
+The Address field uses Google Places Autocomplete (`pac-target-input`). Typing text alone is not enough -- the form validates that an address was selected from the dropdown, not just typed.
 
 The solution types the address string and then waits for and clicks the first `.pac-item` suggestion:
 
@@ -110,13 +110,7 @@ self.page.locator(".pac-item").first.click()
 
 The logo upload field is a hidden `input[type='file']` sibling of the visible upload button. After a file is set, the application opens a ReactCrop modal for image editing. The crop modal must be confirmed before the main form can be submitted.
 
-The crop save button is identified by the absence of an `id` attribute on its inner span (unlike the main form save button which has `id="save-button"`), and filtered by text to distinguish it from the crop cancel button:
-
-```python
-crop_save = page.locator("button:has(span.J9zkR:not([id]))").filter(has_text="Save")
-```
-
-A committed `fixtures/test_logo.png` ensures the test is fully self-contained and reproducible on any machine.
+The crop save button is identified using the Ant Design modal footer's primary button selector, scoped to the crop modal that appears after upload. A committed `fixtures/test_logo.png` ensures the test is fully self-contained and reproducible on any machine.
 
 ### Persistence Assertions
 
@@ -128,71 +122,71 @@ Every write operation (create, edit) is followed by a `page.reload()` and a re-a
 
 ```
 avtoikonom-qa/
-│
-├── selector/
-│   └── selectors.py          # Every selector in the project lives here
-│
-├── pages/
-│   ├── login_page.py         # Login flow and auth assertion
-│   ├── partners_page.py      # Partners list navigation and assertions
-│   └── partner_form_page.py  # Partner create/edit form interactions
-│
-├── tests/
-│   ├── test_create_partner.py   # TC-01 core required test
-│   └── test_edit_partner.py     # TC-02 bonus test
-│
-├── utils/
-│   ├── test_data.py          # Environment constants and fixed spec values
-│   └── helpers.py            # Reusable wait and assertion utilities
-│
-├── fixtures/
-│   └── test_logo.png         # Committed test image for logo upload
-│
-├── .github/
-│   └── workflows/
-│       └── e2e.yml           # GitHub Actions CI/CD pipeline
-│
-├── conftest.py               # Session auth fixture, page fixture, test data factory
-├── pytest.ini                # Timeout, markers, test settings
-├── requirements.txt          # Pinned dependencies
-├── .env.example              # Environment variable template
-└── README.md
+|
++-- selector/
+|   +-- selectors.py          # Every selector in the project lives here
+|
++-- pages/
+|   +-- login_page.py         # Login flow and auth assertion
+|   +-- partners_page.py      # Partners list navigation and assertions
+|   +-- partner_form_page.py  # Partner create/edit form interactions
+|
++-- tests/
+|   +-- test_create_partner.py   # TC-01 core required test
+|   +-- test_edit_partner.py     # TC-02 bonus test
+|
++-- utils/
+|   +-- config.py             # Environment configuration (single source of truth)
+|   +-- helpers.py            # Reusable wait and assertion utilities
+|
++-- fixtures/
+|   +-- test_logo.png         # Committed test image for logo upload
+|
++-- .github/
+|   +-- workflows/
+|       +-- e2e.yml           # GitHub Actions CI/CD pipeline
+|
++-- conftest.py               # Session auth fixture, page fixture, test data factory
++-- pytest.ini                # Timeout, markers, HTML reporting
++-- requirements.txt          # Pinned dependencies
++-- .env.example              # Environment variable template
++-- README.md
 ```
 
 ---
 
 ## Test Coverage
 
-### TC-01 — Create Partner (`tests/test_create_partner.py`)
+### TC-01 -- Create Partner (`tests/test_create_partner.py`)
 
 | Step | Action | Assertion |
 |------|--------|-----------|
 | 1 | Navigate to `/partners` | Partners table is visible |
 | 2 | Click New partner | Form modal opens |
-| 3 | Fill Name | — |
-| 4 | Select Type = Service | — |
-| 5 | Select first available Service | — |
-| 6 | Select first available Subscription plan | — |
-| 7 | Type address, select from autocomplete | — |
-| 8 | Fill Telephone | — |
-| 9 | Fill Contact person | — |
-| 10 | Fill Description | — |
-| 11 | Upload logo, confirm crop modal | — |
+| 3 | Fill Name | -- |
+| 4 | Select Type = Service | -- |
+| 5 | Select first available Service | -- |
+| 6 | Select first available Subscription plan | -- |
+| 7 | Type address, select from autocomplete | -- |
+| 8 | Fill Telephone | -- |
+| 9 | Fill Contact person | -- |
+| 10 | Fill Description | -- |
+| 11 | Upload logo, confirm crop modal | -- |
 | 12 | Click Save | Form modal closes |
-| 13 | — | Partner name visible in table |
+| 13 | -- | Partner name visible in table |
 | 14 | Reload page | Partner name still visible after reload |
 
-### TC-02 — Edit Partner (`tests/test_edit_partner.py`) — Bonus
+### TC-02 -- Edit Partner (`tests/test_edit_partner.py`) -- Bonus
 
 | Step | Action | Assertion |
 |------|--------|-----------|
 | 1 | Create a partner (same as TC-01) | Partner visible in table |
-| 2 | Open three dot menu on partner row | — |
+| 2 | Open three dot menu on partner row | -- |
 | 3 | Click Edit | Edit form opens pre-populated |
-| 4 | Update Contact person field | — |
+| 4 | Update Contact person field | -- |
 | 5 | Click Save | Form modal closes |
-| 6 | — | Partner row still present |
-| 7 | — | Updated contact person visible in row |
+| 6 | -- | Partner row still present |
+| 7 | -- | Updated contact person visible in row |
 | 8 | Reload page | Updated value persists after reload |
 
 ---
@@ -235,26 +229,28 @@ pytest tests/test_create_partner.py -v
 # Bonus test only
 pytest tests/test_edit_partner.py -v
 
-# Watch mode — opens a real browser
+# Watch mode -- opens a real browser
 pytest tests/ -v --headed
 
 # Smoke tests only
 pytest tests/ -v -m smoke
 ```
 
+An HTML report is automatically generated at `reports/report.html` after every run.
+
 ---
 
 ## CI/CD
 
-The pipeline runs automatically on every push to `main` and every pull request. It can also be triggered manually from the **Actions** tab in GitHub using `workflow_dispatch` — useful for reviewers who want to see the tests run live without cloning the project.
+The pipeline runs automatically on every push to `main` and every pull request. It can also be triggered manually from the **Actions** tab in GitHub using `workflow_dispatch`.
 
 **Pipeline steps:**
 
 1. Checkout code
-2. Set up Python 3.11
+2. Set up Python 3.11 (with pip caching)
 3. Install Python dependencies
 4. Install Chromium browser
-5. Run full test suite
+5. Run full test suite with HTML reporting
 6. Upload HTML report as artifact
 7. Upload Playwright traces on failure
 
@@ -270,18 +266,20 @@ The pipeline runs automatically on every push to `main` and every pull request. 
 
 ## QA Practices Applied
 
-**Stable selectors** — ID-first selector strategy with all selectors centralised in one file. When the UI changes, one file changes.
+**Stable selectors** -- ID-first selector strategy with all selectors centralised in one file. Developer test-id classes (`testid-*`) used for table column targeting. When the UI changes, one file changes.
 
-**Test isolation** — Each test generates its own unique data and does not depend on state left by another test. TC-02 creates its own partner rather than relying on TC-01 having run first.
+**Test isolation** -- Each test generates its own unique data and does not depend on state left by another test. TC-02 creates its own partner rather than relying on TC-01 having run first.
 
-**Meaningful failure messages** — Assertions include descriptive messages so that when a test fails in CI, the log tells you exactly what was expected and what was missing, without opening the source code.
+**Meaningful failure messages** -- Helper utilities propagate descriptive error messages so that when a test fails in CI, the log tells you exactly what was expected.
 
-**No hard waits** — Zero `time.sleep()` calls. All synchronisation is done through Playwright's event-driven waiting mechanisms.
+**No hard waits** -- Zero `time.sleep()` calls. All synchronisation is done through Playwright's event-driven waiting mechanisms.
 
-**Persistence verification** — Every create and edit operation is followed by a page reload to confirm the data survived a round trip to the backend.
+**Persistence verification** -- Every create and edit operation is followed by a page reload to confirm the data survived a round trip to the backend.
 
-**Session reuse** — Authentication runs once per session and is shared across all tests via `storage_state`, keeping the suite fast and the login flow as a single potential failure point.
+**Session reuse** -- Authentication runs once per session and is shared across all tests via `storage_state`, keeping the suite fast and the login flow as a single potential failure point.
 
-**Committed test fixtures** — The `test_logo.png` file is committed to the repository, making the suite fully self-contained. A reviewer can clone and run without any additional setup beyond `pip install`.
+**Committed test fixtures** -- The `test_logo.png` file is committed to the repository, making the suite fully self-contained. A reviewer can clone and run without any additional setup beyond `pip install`.
 
-**Pinned dependencies** — All packages in `requirements.txt` are version-pinned to ensure identical behaviour across local machines, CI runners, and reviewer environments.
+**Pinned dependencies** -- All packages in `requirements.txt` are version-pinned to ensure identical behaviour across local machines, CI runners, and reviewer environments.
+
+**HTML reporting** -- Every test run produces a self-contained HTML report, available both locally and as a CI artifact.

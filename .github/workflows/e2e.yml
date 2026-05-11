@@ -20,6 +20,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -34,7 +35,7 @@ jobs:
           BASE_URL: ${{ secrets.BASE_URL }}
           QA_EMAIL: ${{ secrets.QA_EMAIL }}
           QA_PASSWORD: ${{ secrets.QA_PASSWORD }}
-        run: pytest tests/ -v --tb=short
+        run: pytest tests/ -v --tb=short --html=reports/report.html --self-contained-html
 
       - name: Upload test report
         if: always()

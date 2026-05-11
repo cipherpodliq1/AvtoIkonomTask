@@ -221,10 +221,7 @@ __marimo__/
 auth.json
 playwright-report/
 test-results/
-
-# Allure
-allure-results/
-allure-report/
+.playwright-mcp/
 
 # pytest
 reports/
