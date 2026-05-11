@@ -52,7 +52,7 @@ def test_edit_partner(page, partner_data):
     # ── Assert: updated contact person visible in the correct row ─────────────
     row = partners_page.get_row_by_name(partner_data["name"])
     expect(
-        row.locator(PartnersPageSelectors.CONTACT_PERSON_COLUMN)
+        row.locator(PartnersPageSelectors.CONTACT_PERSON_CELL)
     ).to_have_text(
         updated_contact,
         timeout=10000
@@ -61,6 +61,6 @@ def test_edit_partner(page, partner_data):
     # ── Assert: changes persist after reload ──────────────────────────────────
     reload_and_assert_visible(
         page,
-        f"span.Cq6YF:has-text('{partner_data['name']}')",
+        partners_page.partner_name_selector(partner_data["name"]),
         f"Edited partner '{partner_data['name']}' should persist after reload"
     )

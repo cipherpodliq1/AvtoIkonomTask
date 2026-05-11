@@ -12,8 +12,11 @@ class PartnersPageSelectors:
     NEW_PARTNER_BUTTON  = "button:has-text('New partner')"
     SEARCH_INPUT        = "#search-partners"
     TABLE_ROW           = "tr.ant-table-row"
+    # Application-generated class for the partner name cell.
+    # Not ideal — a data-testid would be more stable — but this is
+    # the only identifier available in the current UI build.
     PARTNER_NAME_CELL   = "span.Cq6YF"
-    CONTACT_PERSON_COLUMN = "td.testid-pickUpDateColumn"
+    CONTACT_PERSON_CELL = "td.testid-pickUpDateColumn"
     ACTION_BUTTON       = "#action-button"
 
 
