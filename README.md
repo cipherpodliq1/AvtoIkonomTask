@@ -213,7 +213,9 @@ playwright install chromium
 cp .env.example .env
 ```
 
-The `.env.example` already contains the test environment credentials. No changes needed.
+`.env.example` contains placeholder values only. Populate `.env` with real
+credentials provided out-of-band before running the suite locally. CI uses
+GitHub Actions Secrets and does not require a `.env` file.
 
 ---
 
@@ -256,11 +258,11 @@ The pipeline runs automatically on every push to `main` and every pull request. 
 
 **Required GitHub Secrets:**
 
-| Secret | Value |
-|--------|-------|
-| `BASE_URL` | `https://dev.admin.avtoikonom.com` |
-| `QA_EMAIL` | `test_qa_1@example.com` |
-| `QA_PASSWORD` | `test_qa_1@example.com` |
+| Secret | Description |
+|--------|-------------|
+| `BASE_URL` | Base URL of the target admin environment |
+| `QA_EMAIL` | QA account email for the target environment |
+| `QA_PASSWORD` | QA account password for the target environment |
 
 ---
 
