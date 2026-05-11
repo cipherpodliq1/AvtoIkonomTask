@@ -11,7 +11,7 @@ class PartnersPage:
         self.page = page
 
     def navigate(self) -> None:
-        from utils.test_data import BASE_URL
+        from utils.config import BASE_URL
         self.page.goto(f"{BASE_URL}{NavSelectors.PARTNERS_PATH}")
         expect(
             self.page.locator(PartnersPageSelectors.TABLE_ROW).first
