@@ -42,6 +42,6 @@ def test_create_partner(page, partner_data):
     # ── Assert: partner persists after reload ─────────────────────────────────
     reload_and_assert_visible(
         page,
-        f"span.Cq6YF:has-text('{partner_data['name']}')",
+        partners_page.partner_name_selector(partner_data["name"]),
         f"Partner '{partner_data['name']}' should persist after page reload"
     )
