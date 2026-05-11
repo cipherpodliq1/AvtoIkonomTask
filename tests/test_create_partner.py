@@ -1,6 +1,7 @@
 import pytest
 from pages.partners_page import PartnersPage
 from pages.partner_form_page import PartnerFormPage
+from utils.helpers import reload_and_assert_visible
 
 
 @pytest.mark.smoke
@@ -14,13 +15,13 @@ def test_create_partner(page, partner_data):
     partners_page = PartnersPage(page)
     form_page = PartnerFormPage(page)
 
-    # -- Navigate --
+    # ── Navigate ──────────────────────────────────────────────────────────────
     partners_page.navigate()
 
-    # -- Open form --
+    # ── Open form ─────────────────────────────────────────────────────────────
     partners_page.open_create_form()
 
-    # -- Fill all required fields --
+    # ── Fill all required fields ──────────────────────────────────────────────
     form_page.fill_name(partner_data["name"])
     form_page.select_type_service()
     form_page.select_first_service()
@@ -31,14 +32,16 @@ def test_create_partner(page, partner_data):
     form_page.fill_description(partner_data["description"])
     form_page.upload_logo()
 
-    # -- Submit --
+    # ── Submit ────────────────────────────────────────────────────────────────
     form_page.submit()
     form_page.wait_for_modal_close()
 
-    # -- Assert: partner appears in the table --
+    # ── Assert: partner appears in the table ──────────────────────────────────
     partners_page.assert_partner_visible(partner_data["name"])
 
-    # -- Assert: partner persists after reload --
-    page.reload()
-    page.wait_for_load_state("networkidle")
-    partners_page.assert_partner_visible(partner_data["name"])
+    # ── Assert: partner persists after reload ─────────────────────────────────
+    reload_and_assert_visible(
+        page,
+        f"span.Cq6YF:has-text('{partner_data['name']}')",
+        f"Partner '{partner_data['name']}' should persist after page reload"
+    )

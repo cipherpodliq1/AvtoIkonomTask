@@ -1,5 +1,5 @@
 from pathlib import Path
-from playwright.sync_api import Page
+from playwright.sync_api import Page, expect
 from selector.selectors import PartnerFormSelectors
 
 
@@ -32,9 +32,10 @@ class PartnerFormPage:
         self.page.wait_for_selector(
             PartnerFormSelectors.ADDRESS_AUTOCOMPLETE,
             state="visible",
-            timeout=5000,
+            timeout=5000
         )
         self.page.locator(PartnerFormSelectors.ADDRESS_AUTOCOMPLETE).first.click()
+
 
     def fill_phone(self, phone: str) -> None:
         self.page.locator(PartnerFormSelectors.PHONE_INPUT).fill(phone)
@@ -47,16 +48,12 @@ class PartnerFormPage:
 
     def upload_logo(self) -> None:
         logo_path = Path(__file__).parent.parent / "fixtures" / "test_logo.png"
-        self.page.locator(PartnerFormSelectors.UPLOAD_INPUT).set_input_files(
-            str(logo_path)
-        )
-        # The crop modal opens on top of the form modal, making it the last
-        # .ant-modal-footer in the DOM. Target its primary (OK) button.
+        self.page.locator(PartnerFormSelectors.UPLOAD_INPUT).set_input_files(str(logo_path))
         crop_save = self.page.locator(
-            PartnerFormSelectors.CROP_MODAL_FOOTER
-        ).last.locator("button.ant-btn-primary")
+            PartnerFormSelectors.LOGO_CROP_SAVE
+        ).filter(has_text="Save")
         crop_save.wait_for(state="visible", timeout=10000)
-        crop_save.click()
+        crop_save.dispatch_event("click")
         # Wait for crop modal to fully close before returning
         crop_save.wait_for(state="hidden", timeout=10000)
 
@@ -70,5 +67,5 @@ class PartnerFormPage:
         self.page.wait_for_selector(
             PartnerFormSelectors.NAME_INPUT,
             state="hidden",
-            timeout=15000,
+            timeout=15000
         )
